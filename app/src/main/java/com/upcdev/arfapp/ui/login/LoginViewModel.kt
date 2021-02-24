@@ -1,55 +1,53 @@
 package com.upcdev.arfapp.ui.login
 
+import android.content.Context
+import android.preference.PreferenceManager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import android.util.Patterns
+import androidx.lifecycle.map
+import com.upcdev.arfapp.FirebaseUserLiveData
 import com.upcdev.arfapp.data.LoginRepository
 import com.upcdev.arfapp.data.Result
 
 import com.upcdev.arfapp.R
+import kotlin.random.Random
 
-class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel() {
+class LoginViewModel : ViewModel() {
 
-    private val _loginForm = MutableLiveData<LoginFormState>()
-    val loginFormState: LiveData<LoginFormState> = _loginForm
+    companion object {
+        val androidFacts = arrayOf(
+            "Los perros no son todo en nuestra vida pero ellos la hacen completa.",
+            "No hay nada más verdadero en este mundo que el amor de un buen perro.",
+            "Un perro puede expresar más con su cola en minutos que lo que un dueño puede expresar con su lengua en horas.",
+            "El amor es la emoción que una mujer siente siempre por un perro caniche y a veces por un hombre."
+        )
+    }
 
-    private val _loginResult = MutableLiveData<LoginResult>()
-    val loginResult: LiveData<LoginResult> = _loginResult
+    enum class AuthenticationState {
+        AUTHENTICATED, UNAUTHENTICATED, INVALID_AUTHENTICATION
+    }
 
-    fun login(username: String, password: String) {
-        // can be launched in a separate asynchronous job
-        val result = loginRepository.login(username, password)
-
-        if (result is Result.Success) {
-            _loginResult.value =
-                LoginResult(success = LoggedInUserView(displayName = result.data.displayName))
+    val authenticationState = FirebaseUserLiveData().map { user ->
+        if (user != null) {
+            AuthenticationState.AUTHENTICATED
         } else {
-            _loginResult.value = LoginResult(error = R.string.login_failed)
+            AuthenticationState.UNAUTHENTICATED
         }
     }
 
-    fun loginDataChanged(username: String, password: String) {
-        if (!isUserNameValid(username)) {
-            _loginForm.value = LoginFormState(usernameError = R.string.invalid_username)
-        } else if (!isPasswordValid(password)) {
-            _loginForm.value = LoginFormState(passwordError = R.string.invalid_password)
-        } else {
-            _loginForm.value = LoginFormState(isDataValid = true)
-        }
-    }
+    /**
+     * Gets a fact to display based on the user's set preference of which type of fact they want
+     * to see (Android fact or California fact). If there is no logged in user or if the user has
+     * not set a preference, defaults to showing Android facts.
+     */
+    fun getFactToDisplay(context: Context): String {
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+        val factTypePreferenceKey = context.getString(R.string.preference_fact_type_key)
+        val defaultFactType = context.resources.getStringArray(R.array.fact_type)[0]
+        val funFactType = sharedPreferences.getString(factTypePreferenceKey, defaultFactType)
 
-    // A placeholder username validation check
-    private fun isUserNameValid(username: String): Boolean {
-        return if (username.contains("@")) {
-            Patterns.EMAIL_ADDRESS.matcher(username).matches()
-        } else {
-            username.isNotBlank()
-        }
-    }
-
-    // A placeholder password validation check
-    private fun isPasswordValid(password: String): Boolean {
-        return password.length > 5
+        return androidFacts[Random.nextInt(0, androidFacts.size)]
     }
 }

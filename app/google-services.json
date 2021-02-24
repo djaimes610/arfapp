@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "362868408682",
+    "project_id": "arf-db",
+    "storage_bucket": "arf-db.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:362868408682:android:fb2476661957ae10012513",
+        "android_client_info": {
+          "package_name": "com.upcdev.arfapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "362868408682-hm17l4ppb0ooq6e6unf496o45bm5521h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.upcdev.arfapp",
+            "certificate_hash": "ab160c872fe0838fa0a3a95b2b41efc004960f72"
+          }
+        },
+        {
+          "client_id": "362868408682-aum3d40o7utf41g61j2vap9jd179t2m8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBYFiZcuE4KezkppWCNDbpeXjJDGHcuOzo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "362868408682-aum3d40o7utf41g61j2vap9jd179t2m8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
